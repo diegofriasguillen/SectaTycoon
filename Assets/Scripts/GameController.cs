@@ -1,10 +1,11 @@
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class GameController : MonoBehaviour
 {
     public SectManager sectManager;
-    public Text economyText;
+    public TMP_Text economyText;
     public Button buyFollowerButton;
     public float followerCost = 100f;
 
