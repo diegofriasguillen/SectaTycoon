@@ -29,7 +29,7 @@ public class Follower : MonoBehaviour
     void GenerateEconomy()
     {
         currentEconomy += economyRate * Time.deltaTime;
-        // Lógica economía y relacionados
+        Debug.Log(gameObject.name + " generando economía. Total: " + currentEconomy);
     }
 
     void Idle()

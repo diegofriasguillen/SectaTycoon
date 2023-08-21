@@ -9,7 +9,7 @@ public class GameController : MonoBehaviour
     public Button buyFollowerButton;
     public float followerCost = 100f;
 
-    private float playerEconomy = 0f;
+    private float playerEconomy = 100f;
 
     void Update()
     {
@@ -20,6 +20,7 @@ public class GameController : MonoBehaviour
 
     public void BuyFollower()
     {
+        Debug.Log("Intentando comprar seguidor. Economía actual: " + playerEconomy);
         if (playerEconomy >= followerCost)
         {
             playerEconomy -= followerCost;
@@ -34,14 +35,31 @@ public class GameController : MonoBehaviour
                 }
             }
 
+
             sectManager.ActivateNextRoom(); 
             Room newRoom = FindObjectOfType<Room>();
             sectManager.AddFollowerToRoom(newRoom.gameObject);
+        }
+
+        {
+            Debug.LogWarning("No hay suficiente economía para comprar un seguidor.");
         }
     }
 
     public void AddEconomy(float amount)
     {
         playerEconomy += amount;
+    }
+
+    void UpdateEconomyUI()
+    {
+        if (economyText != null)
+        {
+            economyText.text = "Economía: " + playerEconomy.ToString();
+        }
+        else
+        {
+            Debug.LogError("El componente Text de economía no está asignado.");
+        }
     }
 }
