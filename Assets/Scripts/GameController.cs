@@ -13,6 +13,7 @@ public class GameController : MonoBehaviour
 
     void Update()
     {
+        print(playerEconomy);
         economyText.text = "Economía: " + playerEconomy;
 
         buyFollowerButton.interactable = playerEconomy >= followerCost;
