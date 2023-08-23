@@ -7,6 +7,8 @@ public class Follower : MonoBehaviour
     public SectStates stateManager;
 
     private float currentEconomy = 0f;
+    public static float globalEconomyRate = 0f;
+
 
     void Start()
     {
@@ -29,7 +31,10 @@ public class Follower : MonoBehaviour
     void GenerateEconomy()
     {
         currentEconomy += economyRate * Time.deltaTime;
-        //Debug.Log(gameObject.name + " generando economía. Total: " + currentEconomy);
+        //globalEconomyRate += currentEconomy;
+        //currentEconomy = 0;
+        Debug.Log(gameObject.name + " generando economía. Total: " + currentEconomy);
+
     }
 
     void Idle()

@@ -18,6 +18,14 @@ public class GameController : MonoBehaviour
 
         buyFollowerButton.interactable = playerEconomy >= followerCost;
     }
+    private void FixedUpdate()
+    {
+        Follower[] followers = FindObjectsOfType<Follower>();
+        foreach (Follower follower in followers)
+        {
+            AddEconomy(follower.CollectEconomy());
+        }
+    }
 
     public void BuyFollower()
     {
