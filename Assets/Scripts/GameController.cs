@@ -51,7 +51,7 @@ public class GameController : MonoBehaviour
         }
 
         {
-            Debug.LogWarning("No hay suficiente economía para comprar un seguidor.");
+            //Debug.LogWarning("No hay suficiente economía para comprar un seguidor.");
         }
     }
 
