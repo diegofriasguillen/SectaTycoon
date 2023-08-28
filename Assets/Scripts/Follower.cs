@@ -51,7 +51,7 @@ public class Follower : MonoBehaviour
     void GenerateEconomy()
     {
         currentEconomy += economyRate * Time.deltaTime;
-        Debug.Log(gameObject.name + " generando economía. Total: " + currentEconomy);
+        //Debug.Log(gameObject.name + " generando economía. Total: " + currentEconomy);
     }
 
     void GotoNextPoint()
@@ -67,7 +67,7 @@ public class Follower : MonoBehaviour
 
     void Idle()
     {
-        // Lógica inactividad
+        // No tengo ideas para usar idle
     }
 
     public float CollectEconomy()

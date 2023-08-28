@@ -13,8 +13,8 @@ public class GameController : MonoBehaviour
 
     void Update()
     {
-        print(playerEconomy);
-        economyText.text = "Economía: " + playerEconomy;
+        //print(playerEconomy);
+        economyText.text = "Slave faith: " + Mathf.RoundToInt(playerEconomy).ToString();
 
         buyFollowerButton.interactable = playerEconomy >= followerCost;
     }
@@ -29,7 +29,7 @@ public class GameController : MonoBehaviour
 
     public void BuyFollower()
     {
-        Debug.Log("Intentando comprar seguidor. Economía actual: " + playerEconomy);
+        //Debug.Log("Intentando comprar seguidor. Economía actual: " + playerEconomy);
         if (playerEconomy >= followerCost)
         {
             playerEconomy -= followerCost;
@@ -68,7 +68,7 @@ public class GameController : MonoBehaviour
         }
         else
         {
-            Debug.LogError("El componente Text de economía no está asignado.");
+            //Debug.LogError("El componente Text de economía no está asignado.");
         }
     }
 }

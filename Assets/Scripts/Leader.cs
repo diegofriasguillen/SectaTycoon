@@ -1,4 +1,3 @@
-using UnityEditor;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -10,14 +9,34 @@ public class Leader : MonoBehaviour
     private NavMeshAgent agent;
     private float timer = 0f;
 
+    private bool hasReachedDestination = false;
+    private bool isFirstMovement = true;  
+
     void Start()
     {
         agent = GetComponent<NavMeshAgent>();
         stateManager.ChangeLeaderState(SectStates.LeaderState.CheckFollowers);
+        hasReachedDestination = false;
     }
 
     void Update()
     {
+        if (!agent.pathPending && agent.remainingDistance < 0.5f)
+        {
+            hasReachedDestination = true;
+        }
+        else
+        {
+            hasReachedDestination = false;
+        }
+
+        if (hasReachedDestination && !isFirstMovement)  
+        {
+            Quaternion targetRotation = Quaternion.Euler(0, 90, 0);
+            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * 5);
+            hasReachedDestination = false;
+        }
+
         switch (stateManager.GetLeaderState())
         {
             case SectStates.LeaderState.CheckFollowers:
@@ -39,11 +58,10 @@ public class Leader : MonoBehaviour
             {
                 int randomRoomIndex = Random.Range(0, rooms.Length);
                 agent.SetDestination(rooms[randomRoomIndex].transform.position);
-
-                // Recolectar economía de la sala que el líder está visitando
                 CollectEconomyFromRoom(rooms[randomRoomIndex]);
             }
             timer = 0f;
+            isFirstMovement = false;  
         }
     }
 
@@ -56,8 +74,7 @@ public class Leader : MonoBehaviour
             if (follower)
             {
                 float amount = follower.CollectEconomy();
-                // Sumar esto al total de economía del jugador
-                // Aquí debes insertar código para añadir esta cantidad a la economía del jugador
+                
             }
         }
     }
@@ -66,15 +83,13 @@ public class Leader : MonoBehaviour
     {
         Follower[] followers = FindObjectsOfType<Follower>();
         float totalEconomyCollected = 0f;
-        float amount;
 
         foreach (Follower follower in followers)
         {
-            amount = follower.CollectEconomy();
+            float amount = follower.CollectEconomy();
             totalEconomyCollected += amount;
-            Debug.Log("Recolectado de " + follower.name + ": " + amount);
         }
 
-        Debug.Log("Economía recolectada: " + totalEconomyCollected);
+        //Debug.Log("Economía recolectada: " + totalEconomyCollected);
     }
 }
