@@ -1,67 +1,67 @@
 using UnityEngine;
 using UnityEngine.AI;
+using System.Collections.Generic;
 
 public class Leader : MonoBehaviour
 {
-    public float checkInterval = 10f;
+    public float checkInterval = 5f;
+    public Transform[] specificPoints; 
     public SectStates stateManager;
 
     private NavMeshAgent agent;
     private float timer = 0f;
-
-    private bool hasReachedDestination = false;
-    private bool isFirstMovement = true;  
+    private Queue<Vector3> waypoints = new Queue<Vector3>();
 
     void Start()
     {
         agent = GetComponent<NavMeshAgent>();
+        InitializeWaypoints();
         stateManager.ChangeLeaderState(SectStates.LeaderState.CheckFollowers);
-        hasReachedDestination = false;
+    }
+
+    void InitializeWaypoints()
+    {
+        Room[] rooms = FindObjectsOfType<Room>();
+        foreach (Room room in rooms)
+        {
+            waypoints.Enqueue(room.transform.position);
+        }
+
+        foreach (Transform point in specificPoints)
+        {
+            waypoints.Enqueue(point.position);
+        }
     }
 
     void Update()
     {
-        if (!agent.pathPending && agent.remainingDistance < 0.5f)
-        {
-            hasReachedDestination = true;
-        }
-        else
-        {
-            hasReachedDestination = false;
-        }
+        timer += Time.deltaTime;
 
-        if (hasReachedDestination && !isFirstMovement)  
+        if (agent.remainingDistance < 0.5f && timer >= checkInterval)
         {
-            Quaternion targetRotation = Quaternion.Euler(0, 90, 0);
-            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * 5);
-            hasReachedDestination = false;
-        }
-
-        switch (stateManager.GetLeaderState())
-        {
-            case SectStates.LeaderState.CheckFollowers:
+            if (stateManager.GetLeaderState() == SectStates.LeaderState.CheckFollowers)
+            {
                 CheckFollowers();
-                break;
-            case SectStates.LeaderState.CollectEconomy:
+                stateManager.ChangeLeaderState(SectStates.LeaderState.CollectEconomy);
+            }
+            else if (stateManager.GetLeaderState() == SectStates.LeaderState.CollectEconomy)
+            {
                 CollectEconomy();
-                break;
+                GoToNextWaypoint();
+                stateManager.ChangeLeaderState(SectStates.LeaderState.CheckFollowers);
+            }
+            timer = 0f;
         }
     }
 
     void CheckFollowers()
     {
-        timer += Time.deltaTime;
-        if (timer >= checkInterval)
+        Room[] rooms = FindObjectsOfType<Room>();
+        if (rooms.Length > 0)
         {
-            Room[] rooms = FindObjectsOfType<Room>();
-            if (rooms.Length > 0)
-            {
-                int randomRoomIndex = Random.Range(0, rooms.Length);
-                agent.SetDestination(rooms[randomRoomIndex].transform.position);
-                CollectEconomyFromRoom(rooms[randomRoomIndex]);
-            }
-            timer = 0f;
-            isFirstMovement = false;  
+            int randomRoomIndex = Random.Range(0, rooms.Length);
+            agent.SetDestination(rooms[randomRoomIndex].transform.position);
+            CollectEconomyFromRoom(rooms[randomRoomIndex]);
         }
     }
 
@@ -74,7 +74,6 @@ public class Leader : MonoBehaviour
             if (follower)
             {
                 float amount = follower.CollectEconomy();
-                
             }
         }
     }
@@ -89,7 +88,15 @@ public class Leader : MonoBehaviour
             float amount = follower.CollectEconomy();
             totalEconomyCollected += amount;
         }
+    }
 
-        //Debug.Log("Economía recolectada: " + totalEconomyCollected);
+    void GoToNextWaypoint()
+    {
+        if (waypoints.Count > 0)
+        {
+            Vector3 nextWaypoint = waypoints.Dequeue();
+            agent.SetDestination(nextWaypoint);
+            waypoints.Enqueue(nextWaypoint);  
+        }
     }
 }

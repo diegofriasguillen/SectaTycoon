@@ -67,7 +67,7 @@ public class Follower : MonoBehaviour
 
     void Idle()
     {
-        // No tengo ideas para usar idle
+        //No tengo ideas para usar idle
     }
 
     public float CollectEconomy()
