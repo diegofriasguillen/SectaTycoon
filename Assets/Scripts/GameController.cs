@@ -101,6 +101,8 @@ public class GameController : MonoBehaviour
         playerEconomy += amount;
     }
 
+
+
     void UpdateEconomyUI()
     {
         if (economyText != null)
