@@ -11,9 +11,11 @@ public class GameController : MonoBehaviour
     public Slider npcSlider;
     public Slider policeSlider;
     public Button bribePoliceButton;
+    public GameObject musicSound;
 
     public float followerCost = 100f;
-    public float followerCostIncrement = 10f;
+    public float followerCostIncrement = 50f;
+    public TMP_Text followerCostText;
 
     public float initialPoliceRiskIncreaseRate = 0.1f;
     public float policeRiskRateIncrement = 0.01f;
@@ -46,6 +48,8 @@ public class GameController : MonoBehaviour
     public GameObject decoration9;
     public GameObject decoration10;
     public GameObject decoration11;
+    public GameObject decoration12;
+    public GameObject decoration13;
 
 
     void Start()
@@ -61,6 +65,9 @@ public class GameController : MonoBehaviour
 
         decoration1.SetActive(false);
         decoration2.SetActive(false);
+
+        followerCostText.text = "Follower Cost: " + followerCost.ToString();
+        musicSound.SetActive(true);
     }
 
     void Update()
@@ -95,46 +102,55 @@ public class GameController : MonoBehaviour
         {
             decoration1.SetActive(true);
         }
-        if (followers.Length >= 9)
+        if (followers.Length >= 13)
         {
             decoration2.SetActive(true);
         }
-        if (followers.Length >= 15)
+        if (followers.Length >= 33)
         {
             decoration3.SetActive(true);
         }
-        if (followers.Length >= 21)
+        if (followers.Length >= 53)
         {
             decoration4.SetActive(true);
         }
-        if (followers.Length >= 27)
+        if (followers.Length >= 83)
         {
             decoration5.SetActive(true);
         }
-        if (followers.Length >= 33)
+        if (followers.Length >= 103)
         {
             decoration6.SetActive(true);
         }
-        if (followers.Length >= 39)
+        if (followers.Length >= 123)
         {
             decoration7.SetActive(true);
         }
-        if (followers.Length >= 45)
+        if (followers.Length >= 153)
         {
             decoration8.SetActive(true);
         }
-        if (followers.Length >= 51)
+        if (followers.Length >= 183)
         {
             decoration9.SetActive(true);
         }
-        if (followers.Length >= 57)
+        if (followers.Length >= 183)
         {
             decoration10.SetActive(true);
         }
-        if (followers.Length >= 63)
+        if (followers.Length >= 193)
         {
             decoration11.SetActive(true);
         }
+        if (followers.Length >= 200)
+        {
+            decoration12.SetActive(true);
+        }
+        if (followers.Length >= 210)
+        {
+            decoration13.SetActive(true);
+        }
+
 
         // Primer sonido policias
         if (policeRisk < 50)
@@ -163,6 +179,14 @@ public class GameController : MonoBehaviour
             secondsoundPolice.SetActive(true);
         }
 
+        if (soundPolice.activeSelf || secondsoundPolice.activeSelf)
+        {
+            musicSound.SetActive(false);
+        }
+        else
+        {
+            musicSound.SetActive(true);
+        }
 
         if (policeRisk >= 100)
         {
@@ -180,6 +204,53 @@ public class GameController : MonoBehaviour
         }
     }
 
+
+    //public void BuyFollower()
+    //{
+
+    //    if (playerEconomy >= followerCost)
+    //    {
+    //        playerEconomy -= followerCost;
+    //        followerCost += followerCostIncrement;
+
+    //        float randomChance = Random.Range(0f, 1f);
+
+    //        if (randomChance <= 0.1f)
+    //        {
+    //            Follower[] followers = FindObjectsOfType<Follower>();
+    //            if (followers.Length > 3)
+    //            {
+    //                int randomIndex = Random.Range(0, followers.Length);
+    //                Follower followerToDestroy = followers[randomIndex];
+
+    //                if (followerToDestroy != null)
+    //                {
+    //                    sectManager.ReturnFollowerToPool(followerToDestroy.gameObject);
+    //                    ShowFollowerKilledMessage();
+    //                    //Debug.Log("Un seguidor ha sido eliminado!");
+    //                }
+    //            }
+    //        }
+    //        else
+    //        {
+    //            Room[] rooms = FindObjectsOfType<Room>();
+    //            foreach (Room room in rooms)
+    //            {
+    //                if (room.CanAddFollower())
+    //                {
+    //                    sectManager.AddFollowerToRoom(room.gameObject);
+    //                    return;
+    //                }
+    //            }
+    //            sectManager.ActivateNextRoom();
+    //            Room newRoom = FindObjectOfType<Room>();
+    //            sectManager.AddFollowerToRoom(newRoom.gameObject);
+    //        }
+    //    }
+
+    //    followerCostText.text = "Follower Cost: " + followerCost.ToString();
+    //}
+
     public void BuyFollower()
     {
         if (playerEconomy >= followerCost)
@@ -187,12 +258,12 @@ public class GameController : MonoBehaviour
             playerEconomy -= followerCost;
             followerCost += followerCostIncrement;
 
-            float randomChance = Random.Range(0f, 1f);  
+            float randomChance = Random.Range(0f, 1f);
 
             if (randomChance <= 0.1f)
             {
                 Follower[] followers = FindObjectsOfType<Follower>();
-                if (followers.Length > 1)
+                if (followers.Length > 3)
                 {
                     int randomIndex = Random.Range(0, followers.Length);
                     Follower followerToDestroy = followers[randomIndex];
@@ -200,7 +271,7 @@ public class GameController : MonoBehaviour
                     if (followerToDestroy != null)
                     {
                         sectManager.ReturnFollowerToPool(followerToDestroy.gameObject);
-                        ShowFollowerKilledMessage(); 
+                        ShowFollowerKilledMessage();
                         //Debug.Log("Un seguidor ha sido eliminado!");
                     }
                 }
@@ -221,6 +292,8 @@ public class GameController : MonoBehaviour
                 sectManager.AddFollowerToRoom(newRoom.gameObject);
             }
         }
+
+        followerCostText.text = "Follower Cost: " + followerCost.ToString();
     }
 
     public void BribePolice()
@@ -254,6 +327,9 @@ public class GameController : MonoBehaviour
         gameIsOver = true;  
         winPanel.SetActive(true);  
         Time.timeScale = 0f;  
+
+        musicSound.SetActive(false);
+
         Debug.Log("Has ganado el juego!");
     }
 
@@ -264,6 +340,9 @@ public class GameController : MonoBehaviour
         gameIsOver = true;
         losePanel.SetActive(true);
         Time.timeScale = 0f;
+
+        musicSound.SetActive(false);
+
         Debug.Log("Has perdido el juego!");
     }
 
